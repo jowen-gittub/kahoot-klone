@@ -7,6 +7,7 @@ export type Question = {
   options?: string[]
   correct: string
   timeLimit: number
+  explanation?: string
 }
 
 export type Player = {

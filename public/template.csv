@@ -1,4 +1,4 @@
-type,question,option_a,option_b,option_c,option_d,correct,time_limit
-multiple-choice,What is the capital of France?,Berlin,Madrid,Paris,Rome,Paris,20
-true-false,The Earth is flat,,,,,false,15
-open-text,What year did World War II end?,,,,,1945,30
+type,question,option_a,option_b,option_c,option_d,correct,time_limit,explanation
+multiple-choice,What is the capital of France?,Berlin,Madrid,Paris,Rome,Paris,20,Paris has been the capital of France since the 10th century.
+true-false,The Earth is flat,,,,,false,15,The Earth is an oblate spheroid — slightly flattened at the poles.
+open-text,What year did World War II end?,,,,,1945,30,World War II ended in 1945 with Germany surrendering in May and Japan in September.

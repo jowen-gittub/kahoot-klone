@@ -76,24 +76,24 @@ export default function SessionPage() {
   const badge = phaseBadge[session.phase]
 
   return (
-    <div className="min-h-screen p-6" style={{ background: 'var(--w-navy)' }}>
-      <div className="max-w-xl mx-auto space-y-5">
+    <div className="min-h-screen p-8" style={{ background: 'var(--w-navy)' }}>
+      <div className="max-w-2xl mx-auto space-y-6">
 
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-0.5">
-              <div className="w-1 h-6 rounded-full" style={{ background: 'var(--w-orange)' }} />
-              <h1 className="text-xl font-bold text-white">Host Panel</h1>
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-1 h-8 rounded-full" style={{ background: 'var(--w-orange)' }} />
+              <h1 className="text-2xl font-bold text-white">Host Panel</h1>
             </div>
-            <div className="flex items-center gap-3 pl-3">
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Session <span className="font-mono">{id}</span>
+            <div className="flex items-center gap-4 pl-4">
+              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Session <span className="font-mono font-semibold">{id}</span>
               </p>
-              <a href="/admin" className="text-xs hover:underline" style={{ color: 'rgba(255,255,255,0.4)' }}>← Admin</a>
+              <a href="/admin" className="text-sm hover:underline" style={{ color: 'rgba(255,255,255,0.4)' }}>← Admin</a>
             </div>
           </div>
-          <span className="text-xs font-bold px-3 py-1 rounded-full text-white uppercase tracking-wide"
+          <span className="text-sm font-bold px-4 py-1.5 rounded-full text-white uppercase tracking-wide"
             style={{ background: badge.bg }}>
             {badge.label}
           </span>
@@ -101,35 +101,35 @@ export default function SessionPage() {
 
         {/* Lobby */}
         {session.phase === 'lobby' && (
-          <div className="rounded-lg p-5 space-y-4" style={{ background: 'rgba(255,255,255,0.06)' }}>
-            {/* QR code + join info */}
-            <div className="flex gap-4 items-start">
+          <div className="rounded-xl p-7 space-y-6" style={{ background: 'rgba(255,255,255,0.06)' }}>
+            {/* QR + join info */}
+            <div className="flex gap-8 items-start">
               {playUrl && (
-                <div className="shrink-0 space-y-1">
-                  <div className="p-2 rounded-lg" style={{ background: 'white' }}>
-                    <QRCodeSVG value={playUrl} size={96} />
+                <div className="shrink-0 space-y-2">
+                  <div className="p-3 rounded-xl" style={{ background: 'white' }}>
+                    <QRCodeSVG value={playUrl} size={128} />
                   </div>
                   {playUrl.includes('localhost') && (
                     <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>⚠ localhost only</p>
                   )}
                 </div>
               )}
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 space-y-4">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide mb-1" style={{ color: 'rgba(255,255,255,0.5)' }}>Session code</p>
-                  <p className="text-3xl font-bold tracking-widest text-white">{id}</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.4)' }}>Session code</p>
+                  <p className="text-5xl font-bold tracking-widest text-white">{id}</p>
                 </div>
-                <div className="space-y-1.5">
-                  <p className="text-xs font-medium uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.5)' }}>Join at</p>
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Join at</p>
                   {[
-                    { label: 'Direct', url: playUrl || '/play/' + id },
-                    { label: 'Lobby', url: playUrl ? new URL(playUrl).origin + '/join' : '/join' },
-                  ].map(({ label, url }) => (
-                    <div key={label} className="flex items-center gap-2">
-                      <code className="text-xs flex-1 break-all" style={{ color: 'rgba(255,255,255,0.7)' }}>{url}</code>
+                    { url: playUrl || '/play/' + id },
+                    { url: playUrl ? new URL(playUrl).origin + '/join' : '/join' },
+                  ].map(({ url }) => (
+                    <div key={url} className="flex items-center gap-3">
+                      <code className="text-sm flex-1 break-all" style={{ color: 'rgba(255,255,255,0.7)' }}>{url}</code>
                       <button
                         onClick={() => navigator.clipboard.writeText(url)}
-                        className="text-xs font-semibold shrink-0 px-2 py-0.5 rounded"
+                        className="text-xs font-semibold shrink-0 px-3 py-1 rounded"
                         style={{ background: 'var(--w-orange)', color: 'white' }}
                       >
                         Copy
@@ -140,32 +140,33 @@ export default function SessionPage() {
               </div>
             </div>
 
+            {/* Players */}
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                Players joined ({onlineCount} online{playerCount !== onlineCount ? `, ${playerCount - onlineCount} offline` : ''})
+              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Players joined — {onlineCount} online{playerCount !== onlineCount ? `, ${playerCount - onlineCount} offline` : ''}
               </p>
               {playerCount > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {Object.values(session.players).map(p => {
                     const online = Date.now() - p.lastSeen < 15000
                     return (
-                      <span key={p.name} className="text-sm px-3 py-1 rounded-full flex items-center gap-1.5"
-                        style={{ background: 'rgba(255,255,255,0.12)', color: online ? 'white' : 'rgba(255,255,255,0.35)' }}>
-                        <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: online ? '#22c55e' : 'rgba(255,255,255,0.25)' }} />
+                      <span key={p.name} className="text-sm px-4 py-1.5 rounded-full flex items-center gap-2"
+                        style={{ background: 'rgba(255,255,255,0.1)', color: online ? 'white' : 'rgba(255,255,255,0.35)' }}>
+                        <span className="w-2 h-2 rounded-full" style={{ background: online ? '#22c55e' : 'rgba(255,255,255,0.2)' }} />
                         {p.name}
                       </span>
                     )
                   })}
                 </div>
               ) : (
-                <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>Waiting for players…</p>
+                <p className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>Waiting for players…</p>
               )}
             </div>
 
             <button
               onClick={() => act('start-question')}
               disabled={playerCount === 0}
-              className="w-full py-3 rounded font-semibold text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="w-full py-4 rounded-lg text-base font-bold text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               style={{ background: 'var(--w-orange)' }}
             >
               Begin quiz · {session.quiz.length} question{session.quiz.length !== 1 ? 's' : ''}
@@ -175,33 +176,34 @@ export default function SessionPage() {
 
         {/* Question / Reveal */}
         {(session.phase === 'question' || session.phase === 'reveal') && (
-          <div className="rounded-lg p-5 space-y-4" style={{ background: 'rgba(255,255,255,0.06)' }}>
+          <div className="rounded-xl p-7 space-y-6" style={{ background: 'rgba(255,255,255,0.06)' }}>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <span className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 Question {session.currentQuestion + 1} / {session.quiz.length}
               </span>
-              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--w-orange)' }}>
+              <span className="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full"
+                style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}>
                 {question.type}
               </span>
             </div>
 
-            <p className="text-lg font-semibold text-white leading-snug">{question.text}</p>
+            <p className="text-2xl font-bold text-white leading-snug">{question.text}</p>
 
             {question.options && (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 {question.options.map(opt => (
                   <div
                     key={opt}
-                    className="rounded px-3 py-2.5 text-sm font-medium transition-all"
+                    className="rounded-lg px-5 py-4 text-base font-medium transition-all"
                     style={{
                       background: session.phase === 'reveal'
-                        ? opt === question.correct ? 'rgba(34,197,94,0.25)' : 'rgba(255,255,255,0.04)'
+                        ? opt === question.correct ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.03)'
                         : 'rgba(255,255,255,0.08)',
                       color: session.phase === 'reveal'
-                        ? opt === question.correct ? '#86efac' : 'rgba(255,255,255,0.35)'
+                        ? opt === question.correct ? '#86efac' : 'rgba(255,255,255,0.3)'
                         : 'white',
                       border: session.phase === 'reveal' && opt === question.correct
-                        ? '1px solid rgba(34,197,94,0.5)' : '1px solid transparent',
+                        ? '1px solid rgba(34,197,94,0.5)' : '1px solid rgba(255,255,255,0.06)',
                     }}
                   >
                     {opt}
@@ -211,18 +213,26 @@ export default function SessionPage() {
             )}
 
             {session.phase === 'reveal' && (
-              <p className="text-sm" style={{ color: '#86efac' }}>
-                Correct: <strong>{question.correct}</strong>
-              </p>
+              <div className="space-y-3">
+                <p className="text-base" style={{ color: '#86efac' }}>
+                  ✓ Correct answer: <strong>{question.correct}</strong>
+                </p>
+                {question.explanation && (
+                  <div className="rounded-lg px-4 py-3" style={{ background: 'rgba(255,255,255,0.06)', borderLeft: '3px solid var(--w-orange)' }}>
+                    <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--w-orange)' }}>Explanation</p>
+                    <p className="text-sm text-white leading-relaxed">{question.explanation}</p>
+                  </div>
+                )}
+              </div>
             )}
 
-            {/* Answer progress */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {/* Progress */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 <span>{answeredCount} / {playerCount} answered</span>
                 <span>{playerCount ? Math.round((answeredCount / playerCount) * 100) : 0}%</span>
               </div>
-              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
                 <div
                   className="h-full rounded-full transition-all"
                   style={{
@@ -235,14 +245,14 @@ export default function SessionPage() {
 
             {session.phase === 'question' && (
               <button onClick={() => act('reveal')}
-                className="w-full py-2.5 rounded font-semibold text-white transition-colors"
-                style={{ background: 'rgba(255,255,255,0.12)' }}>
+                className="w-full py-4 rounded-lg text-base font-bold text-white"
+                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
                 Reveal answer
               </button>
             )}
             {session.phase === 'reveal' && (
               <button onClick={() => act('leaderboard')}
-                className="w-full py-2.5 rounded font-semibold text-white transition-colors"
+                className="w-full py-4 rounded-lg text-base font-bold text-white"
                 style={{ background: 'var(--w-orange)' }}>
                 Show leaderboard
               </button>
@@ -252,29 +262,29 @@ export default function SessionPage() {
 
         {/* Leaderboard */}
         {(session.phase === 'leaderboard' || session.phase === 'done') && (
-          <div className="rounded-lg p-5 space-y-3" style={{ background: 'rgba(255,255,255,0.06)' }}>
-            <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <div className="rounded-xl p-7 space-y-4" style={{ background: 'rgba(255,255,255,0.06)' }}>
+            <h2 className="text-sm font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
               {session.phase === 'done' ? 'Final scores' : 'Leaderboard'}
             </h2>
             <div className="space-y-2">
               {sortedPlayers.map(([, p], i) => (
-                <div key={p.name} className="flex items-center gap-3 rounded px-3 py-2.5"
+                <div key={p.name} className="flex items-center gap-4 rounded-lg px-5 py-3.5"
                   style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <span className="text-sm w-5 text-center font-bold"
-                    style={{ color: i === 0 ? 'var(--w-orange)' : 'rgba(255,255,255,0.4)' }}>
+                  <span className="text-lg font-bold w-6 text-center"
+                    style={{ color: i === 0 ? 'var(--w-orange)' : 'rgba(255,255,255,0.35)' }}>
                     {i + 1}
                   </span>
-                  <span className="flex-1 text-sm text-white font-medium">{p.name}</span>
+                  <span className="flex-1 text-base text-white font-medium">{p.name}</span>
                   {session.settings.streaks && p.streak > 1 && (
-                    <span className="text-xs" style={{ color: 'var(--w-orange)' }}>🔥 {p.streak}</span>
+                    <span className="text-sm" style={{ color: 'var(--w-orange)' }}>🔥 {p.streak}</span>
                   )}
-                  <span className="font-bold text-white">{p.score.toLocaleString()}</span>
+                  <span className="text-lg font-bold text-white">{p.score.toLocaleString()}</span>
                 </div>
               ))}
             </div>
             {session.phase === 'leaderboard' && (
               <button onClick={() => act('next')}
-                className="w-full py-2.5 rounded font-semibold text-white mt-2"
+                className="w-full py-4 rounded-lg text-base font-bold text-white mt-2"
                 style={{ background: 'var(--w-orange)' }}>
                 {session.currentQuestion + 1 < session.quiz.length ? 'Next question' : 'Finish quiz'}
               </button>
@@ -282,9 +292,7 @@ export default function SessionPage() {
             {session.phase === 'done' && (
               <button
                 onClick={async () => {
-                  const res = await fetch(`/api/export/${id}`, {
-                    headers: { 'x-host-token': getHostToken(id) },
-                  })
+                  const res = await fetch(`/api/export/${id}`, { headers: { 'x-host-token': getHostToken(id) } })
                   const blob = await res.blob()
                   const url = URL.createObjectURL(blob)
                   const a = document.createElement('a')
@@ -295,7 +303,7 @@ export default function SessionPage() {
                   a.click()
                   URL.revokeObjectURL(url)
                 }}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded font-semibold text-white mt-2"
+                className="flex items-center justify-center gap-2 w-full py-4 rounded-lg text-base font-bold text-white mt-2"
                 style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}
               >
                 ↓ Export results (.xlsx)

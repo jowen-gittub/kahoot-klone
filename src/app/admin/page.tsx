@@ -20,6 +20,7 @@ const EMPTY_QUESTION = (): Omit<Question, 'id'> => ({
   options: ['', '', '', ''],
   correct: '',
   timeLimit: 20,
+  explanation: '',
 })
 
 function newDraft(): QuizDraft {
@@ -107,6 +108,7 @@ export default function AdminPage() {
           options,
           correct: r.correct,
           timeLimit: Number(r.time_limit) || 20,
+          explanation: r.explanation || '',
         }
       })
   }
@@ -433,6 +435,20 @@ export default function AdminPage() {
                   onChange={e => setQuestionDraft(d => ({ ...d, timeLimit: Number(e.target.value) }))}
                   className="w-32 rounded px-3 py-2 text-sm focus:outline-none"
                   style={{ border: '1px solid var(--w-gray-100)', color: 'var(--w-gray-800)' }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--w-gray-600)' }}>
+                  Explanation <span className="font-normal" style={{ color: 'var(--w-gray-400)' }}>(optional — shown after reveal)</span>
+                </label>
+                <textarea
+                  value={questionDraft.explanation ?? ''}
+                  onChange={e => setQuestionDraft(d => ({ ...d, explanation: e.target.value }))}
+                  className="w-full rounded px-3 py-2 text-sm focus:outline-none"
+                  style={{ border: '1px solid var(--w-gray-100)', color: 'var(--w-gray-800)' }}
+                  rows={2}
+                  placeholder="Why is this the correct answer?"
                 />
               </div>
             </div>

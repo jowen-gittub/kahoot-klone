@@ -20,10 +20,10 @@ function useSession(id: string) {
 
 // Wärtsilä-branded option colors: navy, orange, teal, slate
 const OPTION_STYLES = [
-  { bg: '#003057', hover: '#00233f' },
-  { bg: '#FF5000', hover: '#cc4000' },
-  { bg: '#006a6a', hover: '#005050' },
-  { bg: '#4a5568', hover: '#3a4455' },
+  { bg: '#1d6fa4' },
+  { bg: '#FF5000' },
+  { bg: '#006a6a' },
+  { bg: '#7c3aed' },
 ]
 
 const OPTION_SHAPES = ['▲', '◆', '●', '■']
@@ -156,6 +156,9 @@ export default function PlayPage() {
             <div className="w-1 h-6 rounded-full" style={{ background: 'var(--w-orange)' }} />
             <h1 className="text-xl font-bold" style={{ color: 'var(--w-navy)' }}>Join Quiz</h1>
           </div>
+          {session?.name && (
+            <p className="text-sm font-semibold" style={{ color: 'var(--w-navy)' }}>{session.name}</p>
+          )}
           <input
             value={name}
             onChange={e => setName(e.target.value)}
@@ -188,11 +191,17 @@ export default function PlayPage() {
   if (session.phase === 'lobby') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-5 p-6" style={{ background: 'var(--w-navy)' }}>
+        {session.name && (
+          <div className="text-center mb-2">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>Quiz</p>
+            <h1 className="text-2xl font-bold text-white">{session.name}</h1>
+          </div>
+        )}
         <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white"
           style={{ background: 'var(--w-orange)' }}>
           {player?.name?.[0]?.toUpperCase()}
         </div>
-        <h2 className="text-2xl font-bold text-white">{player?.name}</h2>
+        <h2 className="text-xl font-bold text-white">{player?.name}</h2>
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>Waiting for the host to start…</p>
         <div className="flex gap-1 mt-2">
           {[0,1,2].map(i => (
@@ -210,6 +219,7 @@ export default function PlayPage() {
   if (session.phase === 'question') {
     return (
       <div className="min-h-screen flex flex-col p-4 gap-4" style={{ background: 'var(--w-navy)' }}>
+        {session.name && <p className="text-xs font-semibold text-center uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>{session.name}</p>}
         {/* Timer */}
         <div className="flex items-center gap-3 pt-2">
           <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.12)' }}>
@@ -236,14 +246,14 @@ export default function PlayPage() {
             <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.35)' }}>Waiting for others…</p>
           </div>
         ) : question.type === 'multiple-choice' ? (
-          <div className="grid grid-cols-2 gap-3 flex-1">
+          <div className="grid grid-cols-2 gap-3">
             {(question.options ?? []).map((opt, i) => (
               <button
                 key={opt}
                 onClick={() => submitAnswer(opt)}
                 disabled={submitting}
-                className="text-white rounded-lg font-semibold text-base flex flex-col items-center justify-center gap-2 transition-opacity min-h-[100px] disabled:opacity-50"
-                style={{ background: OPTION_STYLES[i].bg }}
+                className="text-white rounded-lg font-semibold text-base flex flex-col items-center justify-center gap-2 transition-opacity disabled:opacity-50"
+                style={{ background: OPTION_STYLES[i].bg, height: '110px' }}
               >
                 <span className="text-2xl opacity-70">{OPTION_SHAPES[i]}</span>
                 <span>{opt}</span>
@@ -251,14 +261,14 @@ export default function PlayPage() {
             ))}
           </div>
         ) : question.type === 'true-false' ? (
-          <div className="grid grid-cols-2 gap-3 flex-1">
+          <div className="grid grid-cols-2 gap-3">
             {['true', 'false'].map((val, i) => (
               <button
                 key={val}
                 onClick={() => submitAnswer(val)}
                 disabled={submitting}
-                className="text-white rounded-lg font-bold text-2xl flex items-center justify-center capitalize disabled:opacity-50 min-h-[120px]"
-                style={{ background: OPTION_STYLES[i].bg }}
+                className="text-white rounded-lg font-bold text-2xl flex items-center justify-center capitalize disabled:opacity-50"
+                style={{ background: OPTION_STYLES[i].bg, height: '110px' }}
               >
                 {val}
               </button>
@@ -275,6 +285,7 @@ export default function PlayPage() {
   if (session.phase === 'reveal') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-5 p-6" style={{ background: 'var(--w-navy)' }}>
+        {session.name && <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>{session.name}</p>}
         <div className="w-24 h-24 rounded-full flex items-center justify-center text-5xl"
           style={{ background: lastResult?.isCorrect ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)' }}>
           {lastResult?.isCorrect ? '✓' : '✗'}
@@ -286,7 +297,13 @@ export default function PlayPage() {
         <p className="text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
           Correct answer: <strong className="text-white">{question.correct}</strong>
         </p>
-        <p className="text-xs mt-4" style={{ color: 'rgba(255,255,255,0.3)' }}>Waiting for host…</p>
+        {question.explanation && (
+          <div className="w-full max-w-sm rounded-lg px-4 py-3 text-left" style={{ background: 'rgba(255,255,255,0.06)', borderLeft: '3px solid var(--w-orange)' }}>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--w-orange)' }}>Explanation</p>
+            <p className="text-sm text-white leading-relaxed">{question.explanation}</p>
+          </div>
+        )}
+        <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Waiting for host…</p>
       </div>
     )
   }
@@ -295,6 +312,7 @@ export default function PlayPage() {
   if (session.phase === 'leaderboard' || session.phase === 'done') {
     return (
       <div className="min-h-screen flex flex-col p-6 gap-5" style={{ background: 'var(--w-navy)' }}>
+        {session.name && <p className="text-xs font-semibold uppercase tracking-widest text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>{session.name}</p>}
         <h2 className="text-lg font-bold text-white text-center">
           {session.phase === 'done' ? 'Final scores' : 'Leaderboard'}
         </h2>
