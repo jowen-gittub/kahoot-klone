@@ -67,8 +67,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const safeName = (session.name || 'Quiz').replace(/[\/\\:*?"<>|]/g, '')
   const filename = `${safeName} ${timestamp} results.xlsx`
 
-  const buf = await wb.xlsx.writeBuffer()
-  return new NextResponse(buf as Buffer, {
+  const buf = Buffer.from(await wb.xlsx.writeBuffer())
+  return new NextResponse(buf, {
     headers: {
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition': `attachment; filename="${filename}"`,
