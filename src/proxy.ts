@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const PROTECTED = ['/admin', '/api/session']
+const EXCLUDED = ['/admin/login']
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   const isProtected =
     PROTECTED.some(p => pathname === p || pathname.startsWith(p + '/')) &&
+    !EXCLUDED.some(e => pathname === e || pathname.startsWith(e + '/')) &&
     // allow GET on /api/session (used by host panel to read session)
     !(pathname.startsWith('/api/session') && req.method === 'GET')
 
