@@ -458,7 +458,7 @@ export default function AdminPage() {
               <h2 className="font-semibold text-sm uppercase tracking-wide" style={{ color: 'var(--w-navy)' }}>
                 Questions ({questions.length})
               </h2>
-              <button onClick={() => setQuestions(() => [])} className="text-xs px-2 py-1 rounded border hover:text-red-500 hover:border-red-300 transition-colors" style={{ color: 'var(--w-gray-600)', borderColor: 'var(--w-gray-400)', background: 'var(--w-gray-50)' }}>
+              <button onClick={() => setQuestions(() => [])} className="text-xs px-2 py-1 rounded border hover:text-red-500 hover:border-red-300 transition-colors" style={{ width: '72px', color: 'var(--w-gray-600)', borderColor: 'var(--w-gray-400)', background: 'var(--w-gray-50)' }}>
                 Clear all
               </button>
             </div>
@@ -466,32 +466,34 @@ export default function AdminPage() {
               <div key={q.id} className="flex items-start gap-3 py-2.5 border-b last:border-0" style={{ borderColor: 'var(--w-gray-100)' }}>
                 <div className="flex flex-col gap-0.5 pt-0.5">
                   <button onClick={() => moveQuestion(i, -1)} disabled={i === 0}
-                    className="w-6 h-5 flex items-center justify-center rounded text-xs border disabled:opacity-20 transition-colors"
+                    className="w-6 h-5 flex items-center justify-center rounded text-xs border disabled:opacity-40 transition-colors"
                     style={{ color: 'var(--w-gray-600)', borderColor: 'var(--w-gray-400)', background: 'var(--w-gray-50)' }}>▲</button>
                   <button onClick={() => moveQuestion(i, 1)} disabled={i === questions.length - 1}
-                    className="w-6 h-5 flex items-center justify-center rounded text-xs border disabled:opacity-20 transition-colors"
+                    className="w-6 h-5 flex items-center justify-center rounded text-xs border disabled:opacity-40 transition-colors"
                     style={{ color: 'var(--w-gray-600)', borderColor: 'var(--w-gray-400)', background: 'var(--w-gray-50)' }}>▼</button>
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--w-orange)' }}>{q.type}</span>
                   <p className="text-sm mt-0.5" style={{ color: 'var(--w-gray-800)' }}>{i + 1}. {q.text}</p>
-                  <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--w-gray-400)' }}>
-                    Correct: {q.correct} ·
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--w-gray-400)' }}>Correct: {q.correct}</p>
+                </div>
+                <div className="flex flex-col gap-1 shrink-0" style={{ width: '72px' }}>
+                  <button onClick={() => removeQuestion(q.id)} className="w-full text-xs px-2 py-1 rounded border hover:text-red-500 hover:border-red-300 transition-colors" style={{ color: 'var(--w-gray-600)', borderColor: 'var(--w-gray-400)', background: 'var(--w-gray-50)' }}>
+                    Remove
+                  </button>
+                  <div className="flex items-center w-full text-xs" style={{ color: 'var(--w-gray-400)' }}>
                     <input
                       type="number"
                       value={q.timeLimit}
                       min={5}
                       max={120}
                       onChange={e => setQuestions(prev => prev.map(x => x.id === q.id ? { ...x, timeLimit: Number(e.target.value) } : x))}
-                      className="w-12 text-center rounded px-1 py-0 focus:outline-none"
-                      style={{ border: '1px solid var(--w-gray-100)', color: 'var(--w-gray-600)', fontSize: 'inherit' }}
+                      className="flex-1 min-w-0 text-center rounded-l px-1 py-1 focus:outline-none"
+                      style={{ border: '1px solid var(--w-gray-400)', borderRight: 'none', color: 'var(--w-gray-600)', fontSize: 'inherit', background: 'var(--w-gray-50)' }}
                     />
-                    s
-                  </p>
+                    <span className="px-1.5 py-1 rounded-r" style={{ border: '1px solid var(--w-gray-400)', background: 'var(--w-gray-50)' }}>s</span>
+                  </div>
                 </div>
-                <button onClick={() => removeQuestion(q.id)} className="text-xs px-2 py-1 rounded border hover:text-red-500 hover:border-red-300 transition-colors shrink-0" style={{ color: 'var(--w-gray-600)', borderColor: 'var(--w-gray-400)', background: 'var(--w-gray-50)' }}>
-                  Remove
-                </button>
               </div>
             ))}
           </div>
