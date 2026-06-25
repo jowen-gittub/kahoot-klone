@@ -211,9 +211,12 @@ export default function PlayPage() {
     return (
       <div className="min-h-screen flex flex-col items-center" style={{ background: 'var(--w-navy)' }}>
       <div className="w-full max-w-2xl flex flex-col p-4 gap-4 flex-1">
-        {session.name && <p className="text-xs font-semibold text-center uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>{session.name}</p>}
+        <div className="text-center space-y-1">
+          {session.name && <p className="text-sm font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>{session.name}</p>}
+          {question.category && <p className="text-base font-semibold" style={{ color: 'rgba(255,255,255,0.65)' }}>{question.category}</p>}
+        </div>
         {/* Timer */}
-        <div className="flex items-center gap-3 pt-2">
+        <div className="flex items-center gap-3">
           <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.12)' }}>
             <div
               className="h-full rounded-full transition-all duration-500"
@@ -226,11 +229,8 @@ export default function PlayPage() {
           <span className="text-white font-bold text-sm w-6 text-right">{timeLeft}</span>
         </div>
 
-        <div className="text-center space-y-1 py-2">
+        <div className="text-center py-2">
           <p className="text-white text-2xl font-bold leading-snug">{question.text}</p>
-          {question.category && (
-            <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>{question.category}</p>
-          )}
         </div>
 
         {answered ? (

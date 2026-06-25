@@ -60,7 +60,7 @@ export default function SessionPage() {
 
   return (
     <div className="min-h-screen p-8" style={{ background: 'var(--w-navy)' }}>
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="mx-auto space-y-6" style={{ maxWidth: '42rem' }}>
 
         {/* Header */}
         <div className="flex items-center justify-between">
