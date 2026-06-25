@@ -209,7 +209,8 @@ export default function PlayPage() {
   // Question phase
   if (session.phase === 'question') {
     return (
-      <div className="min-h-screen flex flex-col p-4 gap-4" style={{ background: 'var(--w-navy)' }}>
+      <div className="min-h-screen flex flex-col items-center" style={{ background: 'var(--w-navy)' }}>
+      <div className="w-full max-w-2xl flex flex-col p-4 gap-4 flex-1">
         {session.name && <p className="text-xs font-semibold text-center uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>{session.name}</p>}
         {/* Timer */}
         <div className="flex items-center gap-3 pt-2">
@@ -225,7 +226,12 @@ export default function PlayPage() {
           <span className="text-white font-bold text-sm w-6 text-right">{timeLeft}</span>
         </div>
 
-        <p className="text-white text-xl font-semibold text-center py-4 leading-snug">{question.text}</p>
+        <div className="text-center space-y-1 py-2">
+          <p className="text-white text-2xl font-bold leading-snug">{question.text}</p>
+          {question.category && (
+            <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>{question.category}</p>
+          )}
+        </div>
 
         {answered ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4">
@@ -269,6 +275,7 @@ export default function PlayPage() {
           <OpenTextAnswer onSubmit={submitAnswer} />
         )}
       </div>
+      </div>
     )
   }
 
@@ -302,7 +309,8 @@ export default function PlayPage() {
   // Leaderboard / Done
   if (session.phase === 'leaderboard' || session.phase === 'done') {
     return (
-      <div className="min-h-screen flex flex-col p-6 gap-5" style={{ background: 'var(--w-navy)' }}>
+      <div className="min-h-screen flex flex-col items-center" style={{ background: 'var(--w-navy)' }}>
+      <div className="w-full max-w-2xl flex flex-col p-6 gap-5 flex-1">
         {session.name && <p className="text-xs font-semibold uppercase tracking-widest text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>{session.name}</p>}
         <h2 className="text-lg font-bold text-white text-center">
           {session.phase === 'done' ? 'Final scores' : 'Leaderboard'}
@@ -334,6 +342,7 @@ export default function PlayPage() {
         {session.phase !== 'done' && (
           <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>Waiting for next question…</p>
         )}
+      </div>
       </div>
     )
   }

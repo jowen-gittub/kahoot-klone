@@ -8,6 +8,7 @@ export type Question = {
   correct: string
   timeLimit: number
   explanation?: string
+  category?: string
 }
 
 export type Player = {

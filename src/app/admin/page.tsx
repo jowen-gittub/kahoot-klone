@@ -112,6 +112,7 @@ export default function AdminPage() {
           correct: r.correct,
           timeLimit: Number(r.time_limit) || 20,
           explanation: r.explanation || '',
+          category: r.category || '',
         }
       })
     if (invalid.length > 0) {

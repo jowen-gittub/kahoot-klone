@@ -3,11 +3,12 @@ import ExcelJS from 'exceljs'
 import { getSession } from '@/lib/store'
 import { validateHostToken } from '@/lib/auth'
 
-const GREEN = { argb: 'FF22C55E' }
-const RED   = { argb: 'FFEF4444' }
-const WHITE = { argb: 'FFFFFFFF' }
-const BLACK = { argb: 'FF000000' }
-const NAVY  = { argb: 'FF003057' }
+const GREEN  = { argb: 'FF22C55E' }
+const RED    = { argb: 'FFEF4444' }
+const WHITE  = { argb: 'FFFFFFFF' }
+const BLACK  = { argb: 'FF000000' }
+const NAVY   = { argb: 'FF003057' }
+const GRAY   = { argb: 'FFDDDDDD' }
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -19,11 +20,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const wb = new ExcelJS.Workbook()
   const ws = wb.addWorksheet('Results')
 
-  // Header row
+  const playerList = Object.entries(session.players)
+
+  // Header row: Question | Correct answer | Player 1 | Player 2 | ... | % Correct
   const headers = [
-    'Player',
-    ...session.history.map((h, i) => `Q${i + 1}: ${h.questionText}`),
-    'Total score',
+    'Question',
+    'Correct answer',
+    ...playerList.map(([, p]) => p.name),
+    '% Correct',
   ]
   const headerRow = ws.addRow(headers)
   headerRow.eachCell(cell => {
@@ -33,36 +37,59 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   })
   ws.getRow(1).height = 30
 
-  // One row per player
-  const playerList = Object.entries(session.players)
-  playerList.forEach(([playerId, player]) => {
+  // One row per question
+  session.history.forEach((h, qi) => {
     const values = [
-      player.name,
-      ...session.history.map(h => h.answers[playerId] ?? '—'),
-      player.score,
+      `Q${qi + 1}: ${h.questionText}`,
+      h.correct,
+      ...playerList.map(([playerId]) => h.answers[playerId] ?? '—'),
     ]
     const row = ws.addRow(values)
 
-    // Color-code each answer cell
-    session.history.forEach((h, i) => {
-      const cell = row.getCell(i + 2) // +2: skip player name col
+    // Style question + correct answer columns
+    row.getCell(1).font = { bold: true }
+    row.getCell(2).font = { bold: true, color: { argb: 'FF166534' } }
+    row.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFdcfce7' } }
+
+    // Color-code each player's answer
+    let correctCount = 0
+    playerList.forEach(([playerId], pi) => {
+      const cell = row.getCell(pi + 3) // +3: skip question + correct cols
       const given = h.answers[playerId]
       if (!given) {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDDDDDD' } }
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: GRAY }
       } else {
-        const correct = given.trim().toLowerCase() === h.correct.trim().toLowerCase()
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: correct ? GREEN : RED }
-        cell.font = { color: correct ? BLACK : WHITE }
+        const isCorrect = given.trim().toLowerCase() === h.correct.trim().toLowerCase()
+        if (isCorrect) correctCount++
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: isCorrect ? GREEN : RED }
+        cell.font = { color: isCorrect ? BLACK : WHITE }
       }
     })
 
-    row.getCell(1).font = { bold: true }
+    // % correct
+    const answeredCount = Object.keys(h.answers).length
+    const pct = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0
+    const pctCell = row.getCell(headers.length)
+    pctCell.value = `${pct}%`
+    pctCell.font = { bold: true }
+    pctCell.alignment = { horizontal: 'center' }
+  })
+
+  // Score row at the bottom
+  const scoreValues = ['Total score', '', ...playerList.map(([, p]) => p.score), '']
+  const scoreRow = ws.addRow(scoreValues)
+  scoreRow.eachCell(cell => {
+    cell.font = { bold: true, color: WHITE }
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: NAVY }
   })
 
   // Column widths
-  ws.getColumn(1).width = 20
-  session.history.forEach((_, i) => { ws.getColumn(i + 2).width = 28 })
-  ws.getColumn(headers.length).width = 14
+  ws.getColumn(1).width = 48  // question
+  ws.getColumn(2).width = 20  // correct answer
+  playerList.forEach((_, i) => { ws.getColumn(i + 3).width = 18 })
+  ws.getColumn(headers.length).width = 12  // % correct
+
+  ws.views = [{ state: 'frozen', ySplit: 1, xSplit: 2 }]
 
   const now = new Date()
   const pad = (n: number) => String(n).padStart(2, '0')

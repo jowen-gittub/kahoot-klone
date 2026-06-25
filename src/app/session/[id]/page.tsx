@@ -170,7 +170,12 @@ export default function SessionPage() {
               </span>
             </div>
 
-            <p className="text-2xl font-bold text-white leading-snug">{question.text}</p>
+            <div className="space-y-1">
+              <p className="text-3xl font-bold text-white leading-snug">{question.text}</p>
+              {question.category && (
+                <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.55)' }}>{question.category}</p>
+              )}
+            </div>
 
             {question.options && (
               <div className="grid grid-cols-2 gap-3">
