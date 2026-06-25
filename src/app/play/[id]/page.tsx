@@ -250,7 +250,7 @@ export default function PlayPage() {
                 onClick={() => submitAnswer(opt)}
                 disabled={submitting}
                 className="text-white rounded-lg font-semibold text-base flex flex-col items-center justify-center gap-2 transition-opacity disabled:opacity-50"
-                style={{ background: OPTION_STYLES[i].bg, height: '110px' }}
+                style={{ background: OPTION_STYLES[i].bg, minHeight: '100px' }}
               >
                 <span className="text-2xl opacity-70">{OPTION_SHAPES[i]}</span>
                 <span>{opt}</span>
@@ -265,7 +265,7 @@ export default function PlayPage() {
                 onClick={() => submitAnswer(val)}
                 disabled={submitting}
                 className="text-white rounded-lg font-bold text-2xl flex items-center justify-center capitalize disabled:opacity-50"
-                style={{ background: OPTION_STYLES[i].bg, height: '110px' }}
+                style={{ background: OPTION_STYLES[i].bg, minHeight: '100px' }}
               >
                 {val}
               </button>
